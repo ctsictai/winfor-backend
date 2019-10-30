@@ -10,21 +10,16 @@ from my_settings import WINFOR_SECRET
 class SignupView(View):
     def post(self, request):
         data = json.loads(request.body)
-        class WrongFormat(Exception):
-            pass
-        class TooShortPw(Exception):
-            pass
         try: 
+            #email 유효성 검사
+            if re.search('[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,4})', data["email"]) == None:
+                return JsonResponse({"message" : "NOT_EMAIL"}, status=400)
             #email 존재여부 검사
             if Account.objects.filter(email = data["email"]).exists():
                 return JsonResponse({"message" : "EMAIL_ALREADY_EXISTS"}, status = 400)
-            #email 유효성 검사
-            email_validator = re.search('[a-zA-Z0-9._+-]+@[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,4})', data["email"])
-            if not email_validator :
-                raise WrongFormat
             #password 길이 검사
             if len(data["password"]) < 7:
-                raise TooShortPw
+                return JsonResponse({"message" : "SHORT_PASSWORD"}, status = 400)
             #모든 검사 통과 시 패스워드 해싱 및 저장 진행
             else:
                 byted_pw = bytes(data["password"], encoding="utf-8")
@@ -38,12 +33,6 @@ class SignupView(View):
         #키에러
         except KeyError:
             return JsonResponse({"message" : "WRONG_KEY"}, status = 400)
-        #이메일 검사 실패
-        except WrongFormat:    
-            return JsonResponse ({"message" : "WRONG_EMAIL_FORMAT"}, status = 400)
-        #패스워드 검사 실패
-        except TooShortPw:       
-            return JsonResponse ({"message" : "PASSWORD_TOO_SHORT"}, status = 400)         
 
 class LoginView(View):
     def post(self, request):
