@@ -18,4 +18,5 @@ from django.urls import path, include
 urlpatterns = [
     path('champions', include('champions.urls')),
     path('account', include('account.urls')),
+    path('statistics',include('stat_cham.urls')),
 ]
