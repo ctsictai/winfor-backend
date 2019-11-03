@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'champions',
     'account',
+    'tierstats',
     'stat_cham',
 ]
 
