@@ -40,8 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'champions',
     'account',
     'tierstats',
+    'stat_cham',
 ]
 
 MIDDLEWARE = [
