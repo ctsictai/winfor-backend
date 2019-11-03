@@ -17,5 +17,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('account', include('account.urls')),
-#    path('tierstats', include('tierstats.urls')),
+    path('tierstats', include('tierstats.urls')),
 ]

@@ -47,20 +47,19 @@ def tierstat_crawler():
         f = float(c)
         aggregate_count.append(e)
         aggregate_percentage.append(f)
-
-    print (summoner_count)
-    print (summoner_percentage)
-       
-
+    
+    tierstats_list = []
     for n in range(len(tiers)):
-        Tierstat(
+        tierstat_object = Tierstat(
             tier = tier_name[n],
             tier_numbers = tier_roman[n],
             summoner = summoner_count[n],
             summoner_percent = summoner_percentage[n],
             aggregate = aggregate_count[n],
             aggregate_percent = aggregate_percentage[n],
-        ).save()
+        )
+        tierstats_list.append(tierstat_object)                              
+    Tierstat.objects.bulk_create(tierstats_list)
 
 if __name__ == '__main__' :
     tierstat_crawler()
