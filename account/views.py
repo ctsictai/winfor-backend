@@ -26,20 +26,23 @@ class SignupView(View):
             #summoner_name 중복 검사
             if Account.objects.filter(summoner_name = data["summoner_name"]).exists():
                 return JsonResponse({"message" : "SUMMONER_EXISTS"}, status = 409)
+            #riot API accountId 요청 하여 찾지못하면 에러리턴
+            input_summoner_name = data["summoner_name"]
+            riot_user_data = requests.get(f"https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/{input_summoner_name}?api_key=RGAPI-ee3b78f4-9625-4f0c-ae77-cf8c13ab26f8")
+            if riot_user_data.status_code != 200:
+                return JsonResponse({"message" : "SUMMONER_NOT_FOUND"}, status = 404)
             #모든 검사 통과 시 패스워드 해싱 및 저장 진행
             else:
                 
                 byted_pw = bytes(data["password"], encoding="utf-8")
                 hashed_pw = bcrypt.hashpw(byted_pw, bcrypt.gensalt())
                 decoded_pw = hashed_pw.decode("utf-8")
-                '''
-                riot_summoner_name = data["summoner_name"]
-                riot_user_data = request.get('https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/{riot_summoner_name}?api_key=RGAPI-ee3b78f4-9625-4f0c-ae77-cf8c13ab26f8')
-                '''
+                json_user_data = riot_user_data.json()
                 Account(
                     email = data["email"],
                     password = decoded_pw,
-                    summoner_name = data["summoner_name"]
+                    summoner_name = data["summoner_name"],
+                    summoner_id = json_user_data["accountId"],
                     ).save()
                 return JsonResponse({"message" : "SIGNUP_SUCCESS"}, status = 200)
         #이메일 유효성 에러    
@@ -47,7 +50,7 @@ class SignupView(View):
             return JsonResponse({"message" : "NOT_EMAIL"}, status=400)
         #키에러
         except KeyError:
-            return JsonResponse({"드message" : "WRONG_KEY"}, status = 400)
+            return JsonResponse({"message" : "WRONG_KEY"}, status = 400)
 
 class LoginView(View):
     def post(self, request):
