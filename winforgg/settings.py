@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'account',
     'tierstats',
     'stat_cham',
+    'spells',
+    'core_rune',
+    'subrune_category',
 ]
 
 MIDDLEWARE = [
