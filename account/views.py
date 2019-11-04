@@ -1,13 +1,15 @@
+import re
+import jwt
 import json
 import bcrypt
-import jwt
-import re
+import requests
+
 from django.http import JsonResponse
 from django.views import View
-from .models import Account
-from my_settings import WINFOR_SECRET
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
+from .models import Account
+from my_settings import WINFOR_SECRET
 
 class SignupView(View):
     def post(self, request):
@@ -21,14 +23,23 @@ class SignupView(View):
             #password 길이 검사
             if len(data["password"]) < 7:
                 return JsonResponse({"message" : "SHORT_PASSWORD"}, status = 400)
+            #summoner_name 중복 검사
+            if Account.objects.filter(summoner_name = data["summoner_name"]).exists():
+                return JsonResponse({"message" : "SUMMONER_EXISTS"}, status = 409)
             #모든 검사 통과 시 패스워드 해싱 및 저장 진행
             else:
+                
                 byted_pw = bytes(data["password"], encoding="utf-8")
                 hashed_pw = bcrypt.hashpw(byted_pw, bcrypt.gensalt())
                 decoded_pw = hashed_pw.decode("utf-8")
+                '''
+                riot_summoner_name = data["summoner_name"]
+                riot_user_data = request.get('https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/{riot_summoner_name}?api_key=RGAPI-ee3b78f4-9625-4f0c-ae77-cf8c13ab26f8')
+                '''
                 Account(
                     email = data["email"],
                     password = decoded_pw,
+                    summoner_name = data["summoner_name"]
                     ).save()
                 return JsonResponse({"message" : "SIGNUP_SUCCESS"}, status = 200)
         #이메일 유효성 에러    
@@ -36,7 +47,7 @@ class SignupView(View):
             return JsonResponse({"message" : "NOT_EMAIL"}, status=400)
         #키에러
         except KeyError:
-            return JsonResponse({"message" : "WRONG_KEY"}, status = 400)
+            return JsonResponse({"드message" : "WRONG_KEY"}, status = 400)
 
 class LoginView(View):
     def post(self, request):
