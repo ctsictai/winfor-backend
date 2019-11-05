@@ -19,5 +19,8 @@ urlpatterns = [
     path('champions', include('champions.urls')),
     path('account', include('account.urls')),
     path('tierstats', include('tierstats.urls')),
-    path('statistics',include('stat_cham.urls')),
+    path('statistics', include('stat_cham.urls')),
+    path('spells', include('spells.urls')),
+#    path('core_rune', include('core_rune.urls')),
+#    path('subrune_catgory', include('subrune_category.urls')),
 ]
