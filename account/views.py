@@ -4,12 +4,12 @@ import json
 import bcrypt
 import requests
 
-from django.http import JsonResponse
-from django.views import View
+from django.http            import JsonResponse
+from django.views           import View
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-from .models import Account
-from my_settings import WINFOR_SECRET
+from .models                import Account
+from my_settings            import WINFOR_SECRET
 
 class SignupView(View):
     def post(self, request):
@@ -28,7 +28,7 @@ class SignupView(View):
                 return JsonResponse({"message" : "SUMMONER_EXISTS"}, status = 409)
             #riot API accountId 요청 하여 찾지못하면 에러리턴
             input_summoner_name = data["summoner_name"]
-            riot_user_data = requests.get(f"https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/{input_summoner_name}?api_key=RGAPI-ee3b78f4-9625-4f0c-ae77-cf8c13ab26f8")
+            riot_user_data = requests.get(f"https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/{input_summoner_name}?api_key={WINFOR_SECRET['riot_api_key']}")
             if riot_user_data.status_code != 200:
                 return JsonResponse({"message" : "SUMMONER_NOT_FOUND"}, status = 404)
             #모든 검사 통과 시 패스워드 해싱 및 저장 진행
