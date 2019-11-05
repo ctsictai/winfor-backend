@@ -32,8 +32,7 @@ class SignupView(View):
             if riot_user_data.status_code != 200:
                 return JsonResponse({"message" : "SUMMONER_NOT_FOUND"}, status = 404)
             #모든 검사 통과 시 패스워드 해싱 및 저장 진행
-            else:
-                
+            else:                
                 byted_pw = bytes(data["password"], encoding="utf-8")
                 hashed_pw = bcrypt.hashpw(byted_pw, bcrypt.gensalt())
                 decoded_pw = hashed_pw.decode("utf-8")
@@ -44,6 +43,7 @@ class SignupView(View):
                     summoner_name = data["summoner_name"],
                     summoner_id = json_user_data["accountId"],
                     ).save()
+
                 return JsonResponse({"message" : "SIGNUP_SUCCESS"}, status = 200)
         #이메일 유효성 에러    
         except ValidationError:
