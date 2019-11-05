@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'spells',
     'core_rune',
     'subrune_category',
+    'game_record',
 ]
 
 MIDDLEWARE = [
