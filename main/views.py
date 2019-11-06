@@ -16,6 +16,7 @@ class CheckLoginView(View):
         user = Account.objects.get(id=request.user.id)
         summoner_name = user.summoner_name
         summoner_profile = f"""http://avatar.leagueoflegends.com/kr/{summoner_name}.png"""
+
         return JsonResponse({"SUMMONER_NAME" : user.summoner_name, "SUMMONER_PROFILE" : summoner_profile}, status=200)
 
 class SearchView(View):
