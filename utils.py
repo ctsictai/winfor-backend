@@ -10,7 +10,7 @@ def login_decorator(func):
         if "Authorization" not in request.headers:
             return JsonResponse({"message" : "NO_TOKEN"}, status = 409)
 
-        JWT = request.headers["authorization"]
+        JWT = request.headers["Authorization"]
 
         try:
             decoded_jwt = jwt.decode(JWT, WINFOR_SECRET['secret'], algorithm = "HS256")
