@@ -24,6 +24,7 @@ class SearchView(View):
         keyword = request.GET.get('keyword', None)
         searched_list = Account.objects.filter(summoner_name__icontains=keyword)[:5].values()
         searched_summoner = [{
+            "SUMMONER_PK" : searched_user["id"],
             "SUMMONER_NAME" : searched_user["summoner_name"],
             "SUMMONER_PROFILE" : f"""http://avatar.leagueoflegends.com/kr/{searched_user['summoner_name']}.png"""
             } for searched_user in searched_list]        
