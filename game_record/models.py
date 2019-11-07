@@ -1,47 +1,54 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from django.db                import models
-from account.models           import User
+from account.models           import Account
 from champions.models         import Champions
 from core_rune.models         import Core_rune
-from sub_rune_category.models import Subrune_category
+from subrune_category.models  import Subrune_category
 from spells.models            import Spell
 
+
 class Game_record(models.Model):
-    user                = models.ForeignKey(User, on_delete=models.CASCADE)
-    champion            = models.ForeignKey(CChampions, on_delete=models.CASCADE)
+    user                = models.ForeignKey(Account, on_delete=models.CASCADE)
+    champion            = models.ForeignKey(Champions, on_delete=models.CASCADE)
     win                 = models.CharField(max_length=10)
     kill                = models.IntegerField()
     death               = models.IntegerField()
     assist              = models.IntegerField()
     champion_level      = models.IntegerField()
-    cs                  = models.IntegerField()
-    start_time          = models.DateField() 
+    cs_neutrals         = models.IntegerField()
+    cs_minions          = models.IntegerField() 
+    start_time          = models.DateField()    # 시작한 날짜
     lane                = models.CharField(max_length=10)
-    to_user1_name       = models.CharField(max_length=20)
-    to_user1_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    to_user2_name       = models.CharField(max_length=20)
-    to_user2_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    to_user3_name       = models.CharField(max_length=20)
-    to_user3_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    to_user4_name       = models.CharField(max_length=20)
-    to_user4_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    en_user1_name       = models.CharField(max_length=20)
-    en_user1_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    en_user2_name       = models.CharField(max_length=20)
-    en_user2_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    en_user3_name       = models.CharField(max_length=20)
-    en_user3_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    en_user4_name       = models.CharField(max_length=20)
-    en_user4_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    en_user5_name       = models.CharField(max_length=20)
-    en_user5_champion   = models.ForeignKey(CChampions, on_delete=models.CASCADE)
-    core_rune           = models.ForeignKey(Core_rune, on_delete=models.CASCADE)
-    sub_rune            = models.ForeignKey(Subrune_category, on_delete=models.CASCADE)
-    spell1              = models.ForeignKey(Spell, on_delete=models.CASCADE)
-    spell2              = models.ForeignKey(Spell, on_delete=models.CASCADE)
-    gameduration        = models.TimeField()
+    blue_first_user_name     = models.CharField(max_length=20)
+    blue_first_user_champion = models.ForeignKey(Champions, on_delete=models.CASCADE, related_name='blue_first_user_champions')
+    blue_user_second_name     = models.CharField(max_length=20)
+    blue_user_second_champion = models.ForeignKey(Champions, on_delete=models.CASCADE, related_name='blue_user_second_champions') 
+    blue_user_third_name     = models.CharField(max_length=20)
+    blue_user_third_champion = models.ForeignKey(Champions, on_delete=models.CASCADE,related_name='blue_user_third_champions')
+    blue_user_fourth_name     = models.CharField(max_length=20)
+    blue_user_fourth_champion = models.ForeignKey(Champions, on_delete=models.CASCADE,related_name='blue_user_fourth_champions')
+    blue_user_fifth_name     = models.CharField(max_length=20)
+    blue_user_fifth_champion = models.ForeignKey(Champions, on_delete=models.CASCADE,related_name='blue_user_fifth_champions')
+    red_user_first_name      = models.CharField(max_length=20)
+    red_user_first_champion  = models.ForeignKey(Champions, on_delete=models.CASCADE,related_name='red_user_first_champions')
+    red_user_second_name      = models.CharField(max_length=20)
+    red_user_second_champion  = models.ForeignKey(Champions, on_delete=models.CASCADE,related_name='red_user_second_champions')
+    red_user_third_name      = models.CharField(max_length=20)
+    red_user_thrid_champion  = models.ForeignKey(Champions, on_delete=models.CASCADE,related_name='red_user_thrid_champions')
+    red_user_fourth_name      = models.CharField(max_length=20)
+    red_user_fourth_champion  = models.ForeignKey(Champions, on_delete=models.CASCADE,related_name='red_user_fourth_champions')
+    red_user_fifth_name      = models.CharField(max_length=20)
+    red_user_fifth_champion  = models.ForeignKey(Champions, on_delete=models.CASCADE,related_name='red_user_fifth_champions')
+    core_rune           = models.ForeignKey(Core_rune, on_delete=models.CASCADE,related_name='core_runes')
+    sub_rune            = models.ForeignKey(Subrune_category, on_delete=models.CASCADE,related_name='sub_runes')
+    spell1              = models.ForeignKey(Spell, on_delete=models.CASCADE,related_name='spell1')
+    spell2              = models.ForeignKey(Spell, on_delete=models.CASCADE,related_name='spell2')
+    gameduration        = models.TimeField()    # 게임한 시간
     doublekill          = models.IntegerField() # 횟수
     triplekill          = models.IntegerField()
     quadrakill          = models.IntegerField()
     pentakill           = models.IntegerField()
-    gametype            = models.CharField(max_length=20)
+    gamemode            = models.CharField(max_length=20) # 게임 타입
 
