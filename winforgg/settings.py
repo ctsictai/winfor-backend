@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'spells',
     'core_rune',
     'subrune_category',
+    'champion_infos',
     'game_record',
 ]
 
