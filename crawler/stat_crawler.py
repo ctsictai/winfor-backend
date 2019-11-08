@@ -28,15 +28,10 @@ champions = driver.find_elements_by_css_selector("#ChampionStatsTable > table > 
 
 champions_list = []
 
-#for champion in champions:    
-#    champions_list.append(champion.text)    
-
-#print(champions_list)
-
 for champion in champions:
     champis = Champions.objects.get(champion_name = champion.text)
     champions_list.append(champis.id)
-print(champions_list)
+#print(champions_list)
 
 win_rates = driver.find_elements_by_css_selector("#ChampionStatsTable > table > tbody > tr > td:nth-child(4) > span ")
 win_rates_list = []
@@ -45,7 +40,7 @@ for win_rate in win_rates:
     win_rate_text = win_rate.text.replace('%',"")
     win_rates_list.append(float(win_rate_text))
 
-print(win_rates_list)
+#print(win_rates_list)
 
 player_counts = driver.find_elements_by_css_selector("#ChampionStatsTable > table > tbody > tr > td:nth-child(5)")
 
@@ -57,14 +52,14 @@ for player_count in player_counts:
        player_count.text
     player_counts_list.append(int(player_count))
 
-print(player_counts_list)
+#print(player_counts_list)
 scores = driver.find_elements_by_css_selector("#ChampionStatsTable > table > tbody > tr > td.Cell.KDARatio > span")
 
 scores_list = []
 for score in scores:
     scores_list.append(score.text)
 
-print(scores_list)
+#print(scores_list)
 
 css = driver.find_elements_by_css_selector("#ChampionStatsTable > table > tbody > tr > td:nth-child(7) > span")
 
@@ -72,16 +67,14 @@ cs_list = []
 for cs in css:
     cs_list.append(float(cs.text))
 
-print(cs_list)
+#print(cs_list)
 
 golds = driver.find_elements_by_css_selector("#ChampionStatsTable > table > tbody > tr > td:nth-child(8) > span")
 
 golds_list = []
 for gold in golds:
-   # print(gold)
     if gold.text.find(','):
        goldsc = gold.text.replace(',','')
-   #    print(goldsc)
     else:
        goldsc = gold.text
     golds_list.append(int(goldsc))
@@ -96,8 +89,8 @@ for i in range(len(golds_list)-1):
             win_rates      = win_rates_list[i],
             player_numbers = player_counts_list[i],
             kda            = scores_list[i],
-            cs_avg         = cs_list[i],
-            gold_avg       = golds_list[i],
+            cs_average     = cs_list[i],
+            gold_average   = golds_list[i],
             rank           = ranks_list[i],
         ).save()
 
