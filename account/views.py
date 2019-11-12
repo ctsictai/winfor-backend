@@ -12,45 +12,46 @@ from .models                import Account
 from my_settings            import WINFOR_SECRET
 
 class SignupView(View):
+    RIOT_API_URL = "https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/%s?api_key=%s}"
+
     def post(self, request):
         data = json.loads(request.body)
         try: 
-            #email 유효성 검사
             validate_email(data["email"])
-            #email 존재여부 검사
+
             if Account.objects.filter(email = data["email"]).exists():
                 return JsonResponse({"message" : "EMAIL_ALREADY_EXISTS"}, status = 409)
-            #password 길이 검사
             if len(data["password"]) < 7:
                 return JsonResponse({"message" : "SHORT_PASSWORD"}, status = 400)
-            #summoner_name 중복 검사
+
             if Account.objects.filter(summoner_name = data["summoner_name"]).exists():
                 return JsonResponse({"message" : "SUMMONER_EXISTS"}, status = 409)
-            #riot API accountId 요청 하여 찾지못하면 에러리턴
+
             input_summoner_name = data["summoner_name"]
-            riot_user_data = requests.get(f"https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/{input_summoner_name}?api_key={WINFOR_SECRET['riot_api_key']}")
+            riot_user_data      = requests.get(self.RIOT_API_URL % (name, api_key), timeout = 1)
+
             if riot_user_data.status_code != 200:
                 return JsonResponse({"message" : "SUMMONER_NOT_FOUND"}, status = 404)
-            #모든 검사 통과 시 패스워드 해싱 및 저장 진행
-            else:                
-                byted_pw = bytes(data["password"], encoding="utf-8")
-                hashed_pw = bcrypt.hashpw(byted_pw, bcrypt.gensalt())
-                decoded_pw = hashed_pw.decode("utf-8")
-                json_user_data = riot_user_data.json()
-                Account(
-                    email = data["email"],
-                    password = decoded_pw,
-                    summoner_name = data["summoner_name"],
-                    summoner_id = json_user_data["accountId"],
-                    ).save()
+            byted_pw       = bytes(data["password"], encoding = "utf-8")
+            hashed_pw      = bcrypt.hashpw(byted_pw, bcrypt.gensalt())
+            decoded_pw     = hashed_pw.decode("utf-8")
+            json_user_data = riot_user_data.json()
 
-                return JsonResponse({"message" : "SIGNUP_SUCCESS"}, status = 200)
-        #이메일 유효성 에러    
+            Account(
+                email         = data["email"],
+                password      = decoded_pw,
+                summoner_name = data["summoner_name"],
+                summoner_id   = json_user_data["accountId"],
+            ).save()
+
+            return JsonResponse({"message" : "SIGNUP_SUCCESS"}, status = 200)
         except ValidationError:
-            return JsonResponse({"message" : "NOT_EMAIL"}, status=400)
-        #키에러
+            return JsonResponse({"message" : "INVALID_EMAIL"}, status=400)
         except KeyError:
-            return JsonResponse({"message" : "WRONG_KEY"}, status = 400)
+            return JsonResponse({"message" : "INVALID_KEY"}, status = 400)
+
+    def check_pasword():
+
 
 class LoginView(View):
     def post(self, request):

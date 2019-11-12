@@ -17,16 +17,22 @@ class CheckLoginView(View):
         summoner_name = user.summoner_name
         summoner_profile = f"""http://avatar.leagueoflegends.com/kr/{summoner_name}.png"""
 
-        return JsonResponse({"SUMMONER_NAME" : user.summoner_name, "SUMMONER_PROFILE" : summoner_profile}, status=200)
+        return JsonResponse({
+            "SUMMONER_NAME"    : user.summoner_name,
+            "SUMMONER_PROFILE" : summoner_profileo
+        }, status=200)
 
 class SearchView(View):
     def get(self, request):
-        keyword = request.GET.get('keyword', None)
-        searched_list = Account.objects.filter(summoner_name__icontains=keyword)[:5].values()
+        limit         = request.GET.get('limit', 5)
+        keyword       = request.GET.get('keyword', None)
+        searched_list = Account.objects.filter(summoner_name__icontains = keyword)[:5].values()
+
         searched_summoner = [{
-            "SUMMONER_PK" : searched_user["id"],
-            "SUMMONER_NAME" : searched_user["summoner_name"],
+            "SUMMONER_PK"      : searched_user["id"],
+            "SUMMONER_NAME"    : searched_user["summoner_name"],
             "SUMMONER_PROFILE" : f"""http://avatar.leagueoflegends.com/kr/{searched_user['summoner_name']}.png"""
-            } for searched_user in searched_list]        
+        } for searched_user in searched_list]        
+
         ##너무 많은 데이터가 가지 않도록 데이터 5개만 가도록 설정
         return JsonResponse({"SEARCHED_SUMMONER" : searched_summoner} , status=200)

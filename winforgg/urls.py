@@ -20,5 +20,5 @@ urlpatterns = [
     path('tierstats', include('tierstats.urls')),
     path('statistics', include('stat_cham.urls')),
     path('main', include('main.urls')),
-    path('champ_info', include('champion_infos.urls')),
+    path('champion', include('champion_infos.urls')),
 ]
