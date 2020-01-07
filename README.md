@@ -30,3 +30,6 @@
 - 챔피언 정보 및 각종 데이터 Selenium을 통해 데이터 crawling 
 - Bcrypt를 사용한 비밀번호 암호화 구현
 - 주요 챔피언 소개 API 구현
+
+## 결과물 
+https://www.youtube.com/watch?v=gYZcFJw0z3Y
