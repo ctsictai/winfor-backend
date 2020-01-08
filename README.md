@@ -4,7 +4,7 @@
  게임 정보 검색 사이트인 OP.GG 사이트를 참고하여 클론코딩한 WINFRO.GG입니다.
 
 # Skills
-- Pyhton
+- Python
 - Django
 - MySQL
 - Bcrypt
